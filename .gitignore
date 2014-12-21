@@ -1,0 +1,15 @@
+# Logs
+logs/
+*.log
+
+# Node modules
+node_modules/
+
+# Builds
+target/
+
+# Zed
+.zedstate
+
+# IntelliJ Family
+.idea/

@@ -1,0 +1,43 @@
+{
+    "name": "TopGun-Server",
+    "author": "Ryan Delaney",
+    "version": "0.0.6",
+    "description": "Backend for TopGun mobile app",
+    "private": true,
+    "main": "target/server.js",
+    "dependencies": {
+        "mongoose": "~3.8.13",
+        "express": "~4.6.1",
+        "body-parser": "~1.5.0",
+        "npmlog": "~0.1.1",
+        "node-uuid": "~1.4.1",
+        "bcrypt-nodejs": "~0.0.3",
+        "request": "~2.40.0",
+        "sendgrid": "~1.1.1"
+    },
+    "devDependencies": {
+        "grunt": "~0.4.5",
+        "grunt-cson": "~0.10.0",
+        "grunt-contrib-coffee": "~0.11.0",
+        "grunt-coffeelint": "~0.0.13",
+        "grunt-contrib-copy": "~0.5.0",
+        "grunt-contrib-clean": "~0.6.0",
+        "chai": "~1.10.0"
+    },
+    "scripts": {
+        "start": "node target/app.js",
+        "test": "mocha target/test.js"
+    },
+    "config": {
+        "cluster": true,
+        "test_host": "127.0.0.1",
+        "test_port": "3000",
+        "prod_host": "0.0.0.0",
+        "prod_port": "80",
+        "test_mongo": "127.0.0.1",
+        "prod_mongo": "127.0.0.1"
+    },
+    "engines": {
+        "node": "0.10.31"
+    }
+}
