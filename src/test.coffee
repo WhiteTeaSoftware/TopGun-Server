@@ -30,4 +30,5 @@ app = (require './App/App')(
 Session = app.get 'Session'
 mongoose = app.get 'mongoose'
 User = app.get 'User'
+Message = app.get 'Message'
 Session = app.get 'Session'

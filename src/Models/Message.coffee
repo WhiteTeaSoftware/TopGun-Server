@@ -22,6 +22,54 @@ module.exports = (app) ->
     MessageSchema.index
         l: '2dsphere'
 
+    MessageSchema.statics.postMessage = (options, response, cb=->) ->
+        @token = options.t
+        @text = options.v
+        @location = options.l
+        @response = options.r
+
+        return cb response.status(500).send m: "Either token or text wasn't specified" if not @token? or not @text?
+
+        query = Session
+                .findById @token
+                .select 'u n -_id'
+                .lean()
+
+        query.exec (err, session) =>
+            return cb response.status(500).send m: 'Some error happened server side!' if err
+            return cb response.status(500).send m: 'Bad token!' if not session?
+
+            @username = session.u
+            @display_name = session.n
+
+            if not @response?
+                message = new @
+                    u: @username
+                    n: @display_name
+                    v: @text
+                    l: @location
+
+                message.save (err) =>
+                    if err
+                        log.warn path.basename(__filename), "A message from user #{@username} was not saved..."
+                        log.warn path.basename(__filename), 'Error: %j', err
+                        cb response.status(500).send m: 'Something bad happened server side'
+                    else
+                        cb response.send m: 'Transaction completed'
+
+            else
+                query = @.findById @response
+                query.exec (err, message) =>
+                    return cb response.status(500).send m: 'Something bad happened server side' if err
+                    return cb response.status(500).send m: 'Message not found' if not message?
+                    message.r.push
+                        u: @username
+                        n: @display_name
+                        v: @text
+
+                    message.save (err) ->
+                        if err then cb response.status(500).send m: 'Something bad happened server side' else response.send m: 'Transaction completed'
+
     MessageSchema.statics.getMessage = (options, response) ->
         @_id = options._id
 
@@ -61,53 +109,5 @@ module.exports = (app) ->
 
             else
                 response.send messages
-
-    MessageSchema.statics.postMessage = (options, response) ->
-        @token = options.t
-        @text = options.v
-        @location = options.l
-        @response = options.r
-
-        return response.status(500).send m: "Either token or text wasn't specified" if not @token? or not @text?
-
-        query = Session
-                .findById @token
-                .select 'u n -_id'
-                .lean()
-
-        query.exec (err, session) =>
-            return response.status(500).send m: 'Some error happened server side!' if err
-            return response.status(500).send m: 'Bad token!' if not session?
-
-            @username = session.u
-            @display_name = session.n
-
-            if not @response?
-                message = new @
-                    u: @username
-                    n: @display_name
-                    v: @text
-                    l: @location
-
-                message.save (err) =>
-                    if err
-                        log.warn path.basename(__filename), "A message from user #{@username} was not saved..."
-                        log.warn path.basename(__filename), 'Error: %j', err
-                        response.status(500).send m: 'Something bad happened server side'
-                    else
-                        response.send m: 'Transaction completed'
-
-            else
-                query = @.findById @response
-                query.exec (err, message) =>
-                    return response.status(500).send m: 'Something bad happened server side' if err
-                    return response.status(500).send m: 'Message not found' if not message?
-                    message.r.push
-                        u: @username
-                        n: @display_name
-                        v: @text
-
-                    message.save (err) ->
-                        if err then response.status(500).send m: 'Something bad happened server side' else response.send m: 'Transaction completed'
 
     app.set 'Message', mongoose.model 'messages', MessageSchema

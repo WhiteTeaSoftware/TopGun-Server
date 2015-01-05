@@ -46,7 +46,7 @@ module.exports = (app) ->
                 return cb response.status(500).send m: 'Username alreay exists!' if err
                 cb response.send m: "Verification code sent to #{@email}"
 
-                if not app.get 'options.testing'
+                if not app.get 'testing'
                     sendgrid.send {
                         from: "auth@#{hostUrl}"
                         fromname: 'TopGun App'

@@ -1,8 +1,7 @@
 describe 'User', ->
     before (done) ->
-        mongoose.connection.on 'open', ->
-            mongoose.connection.db.dropDatabase done
-    
+        mongoose.connection.db.dropDatabase done
+
     describe '.createUser', ->
         it 'should ignore bad usernames', (done) ->
             User.createUser {
@@ -16,7 +15,7 @@ describe 'User', ->
                     expect(err, 'err').to.be.null
                     expect(person, 'User').to.be.null
                     done()
-                
+
         it 'should ignore no username', (done) ->
             User.createUser {
                 n: 'Ryan'
@@ -28,7 +27,7 @@ describe 'User', ->
                     expect(err, 'err').to.be.null
                     expect(person, 'User').to.be.null
                     done()
-                
+
         it 'should ignore no password', (done) ->
             User.createUser {
                 u: 'ryan'
@@ -40,7 +39,7 @@ describe 'User', ->
                     expect(err, 'err').to.be.null
                     expect(person, 'User').to.be.null
                     done()
-                
+
         it 'should ignore no email', (done) ->
             User.createUser {
                 u: 'ryan'
@@ -52,7 +51,7 @@ describe 'User', ->
                     expect(err).to.be.null
                     expect(person).to.be.null
                     done()
-                
+
         it 'should add a good user', (done) ->
             User.createUser {
                 u: 'ryan'
@@ -78,7 +77,7 @@ describe 'User', ->
             }, Response(), (res) ->
                 expect(res.code, 'Response.code').to.equal 500
                 done()
-                
+
         it 'should ignore bad codes', (done) ->
             User.findById 'ryan', (err, person) ->
                 expect(err, 'err_1').to.be.null
@@ -92,7 +91,7 @@ describe 'User', ->
                         expect(err, 'err_2').to.be.null
                         expect(_person.code, 'User_2.c').to.equal(person.code)
                         done()
-                        
+
         it 'should allow good username/code combinations', (done) ->
             User.findById 'ryan', (err, person) ->
                 expect(err, 'err_1').to.be.null
@@ -108,7 +107,7 @@ describe 'User', ->
                         expect(_person, 'User_2').to.not.be.null
                         expect(_person.c, 'User_2.c').to.be.undefined
                         done()
-                        
+
     describe '.login', ->
         it 'should ignore no username', (done) ->
             User.login {
@@ -119,7 +118,7 @@ describe 'User', ->
                     expect(err, 'err').to.be.null
                     expect(sessions, 'sessions').to.be.empty
                     done()
-                    
+
         it 'should ignore no password for native', (done) ->
             User.login {
                 u: 'ryan'
@@ -129,7 +128,7 @@ describe 'User', ->
                     expect(err, 'err').to.be.null
                     expect(sessions, 'sessions').to.be.empty
                     done()
-                    
+
         it 'should accept valid logins', (done) ->
             User.login {
                 u: 'ryan'
@@ -146,13 +145,13 @@ describe 'User', ->
                     expect(sessions[0].n, 'Session.n').to.equal 'Ryan'
                     expect(sessions[0]._id, 'Session._id').to.equal res.result.t
                     done()
-                    
+
     describe '.logout', ->
         it 'should ignore no token', (done) ->
             User.logout {}, Response(), (res) ->
                 expect(res.code, 'Response.code').to.equal 500
                 done()
-            
+
         it 'should ignore invalid tokens', (done) ->
             User.logout {t: 'badtoken'}, Response(), (res) ->
                 expect(res.code, 'Response.code').to.equal 200
@@ -160,7 +159,7 @@ describe 'User', ->
                     expect(err, 'err').to.be.null
                     expect(sessions, 'sessions').to.not.be.empty
                     done()
-                    
+
         it 'should logout good tokens', (done) ->
             Session.find {u: 'ryan'}, (err, sessions) ->
                 expect(err, 'err_1').to.be.null
@@ -173,7 +172,7 @@ describe 'User', ->
                         expect(err, 'err_2').to.be.null
                         expect(err, 'session').to.be.null
                         done()
-                        
+
     describe '.changeDisplayName', ->
         it 'should ignore no username', (done) ->
             User.changeDisplayName {
@@ -182,7 +181,7 @@ describe 'User', ->
             }, Response(), (res) ->
                 expect(res.code, 'Response.code').to.equal 500
                 done()
-            
+
         it 'should ignore no password', (done) ->
             User.changeDisplayName {
                 u: 'ryan'
@@ -190,7 +189,7 @@ describe 'User', ->
             }, Response(), (res) ->
                 expect(res.code, 'Response.code').to.equal 500
                 done()
-                
+
         it 'should ignore no new name', (done) ->
             User.changeDisplayName {
                 u: 'ryan'
@@ -198,7 +197,7 @@ describe 'User', ->
             }, Response(), (res) ->
                 expect(res.code, 'Response.code').to.equal 500
                 done()
-                
+
         it 'shouldnt work for bad usernames', (done) ->
             User.changeDisplayName {
                 u: 'bob'
@@ -207,7 +206,7 @@ describe 'User', ->
             }, Response(), (res) ->
                 expect(res.code, 'Response.code').to.equal 500
                 done()
-                
+
         it 'shouldnt work for bad logins', (done) ->
             User.changeDisplayName {
                 u: 'ryan'
@@ -220,7 +219,7 @@ describe 'User', ->
                     expect(user, 'User').to.not.be.null
                     expect(user.n, 'User.n').to.equal 'Ryan'
                     done()
-                    
+
         it 'should work for good logins', (done) ->
             User.changeDisplayName {
                 u: 'ryan'
@@ -233,7 +232,7 @@ describe 'User', ->
                     expect(user, 'User').to.not.be.null
                     expect(user.n, 'User.n').to.equal 'Big D'
                     done()
-                        
+
     describe '.changePassword', ->
         it 'should ignore no username', (done) ->
             User.changePassword {
@@ -242,7 +241,7 @@ describe 'User', ->
             }, Response(), (res) ->
                 expect(res.code, 'Response.code').to.equal 500
                 done()
-                
+
         it 'should ignore no password', (done) ->
             User.changePassword {
                 u: 'ryan'
@@ -250,7 +249,7 @@ describe 'User', ->
             }, Response(), (res) ->
                 expect(res.code, 'Response.code').to.equal 500
                 done()
-                
+
         it 'should ignore no new password', (done) ->
             User.changePassword {
                 u: 'ryan'
@@ -258,7 +257,7 @@ describe 'User', ->
             }, Response(), (res) ->
                 expect(res.code, 'Response.code').to.equal 500
                 done()
-                
+
         it 'should ignore bad passwords', (done) ->
             User.changePassword {
                 u: 'ryan'
@@ -277,7 +276,7 @@ describe 'User', ->
                     }, Response(), (res) ->
                         expect(res.code, 'Response_3.code').to.equal 500
                         done()
-                    
+
         it 'should allow good passwords', (done) ->
             User.changePassword {
                 u: 'ryan'
