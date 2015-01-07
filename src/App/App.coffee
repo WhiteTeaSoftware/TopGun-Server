@@ -5,8 +5,9 @@ fs = require 'fs'
 path = require 'path'
 
 module.exports = (options = {}) ->
+    options.testing ?= true
     app = express()
-    app.use express.static __dirname+'/../Assets'
+    app.use express.static __dirname+'/../resources'
     app.set 'log', log
 
     ###
@@ -26,31 +27,36 @@ module.exports = (options = {}) ->
         app.set option, value
         options[option] = value
 
-    try options[attr] = val for attr, val of require './../conf' when attr not of options
+    for config in ['./conf', './../conf']
+        for attr, val of require config
+            if attr is 'test'
+                if options.testing
+                    try options[attr__] = val__ for attr__, val__ of val when attr__ not of options
 
-    try options[attr] = val for attr, val of require './conf' when attr not of options
+            else if attr is 'prod'
+                if not options.testing
+                    try options[attr__] = val__ for attr__, val__ of val when attr__ not of options
 
-    model_directory = options.ModelsDir ? 'Models'
-    try options[attr] = val for attr, val of require "./../#{model_directory}/conf" when attr not of options
-
-    route_directory = options.RoutesDir ? 'Routes'
-    try options[attr] = val for attr, val of require "./../#{route_directory}/conf" when attr not of options
+            else if attr not of options
+                try options[attr] = val
 
     name = options.name ?= 'App'
     host = options.host ?= '127.0.0.1'
     port = options.port ?= '3000'
 
-    app.set (option.name ? dep), (option.func ? (x) -> x) require dep for dep, option of options.dependencies if options.dependencies?
+    for dep, option of options.dependencies
+        if options.dependencies?
+            app.set (option.name ? dep), (option.func ? (x) -> x)((require dep), if options.testing then 'test' else 'prod')
 
     app.use ware for ware in options.middleware if options.middleware?
 
     app.set attr, val for attr, val of options when attr isnt 'dependencies' and attr isnt 'middleware' and attr isnt 'Models' and attr isnt 'Routes'
 
-    models = (require "./../#{model_directory}/#{model}" for model in options.Models ? fs.readdirSync "#{__dirname}/../#{model_directory}")
+    models = (require "./../models/#{model}" for model in options.models)
 
     model app for model in models when typeof model is 'function'
 
-    routes = (require "./../#{route_directory}/#{route}" for route in options.Routes ? fs.readdirSync "#{__dirname}/../#{route_directory}")
+    routes = require  './../routes'
 
     route app for route in routes when typeof route is 'function'
 

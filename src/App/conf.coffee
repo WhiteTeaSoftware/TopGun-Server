@@ -1,9 +1,17 @@
+try
+    uSettings = require './../conf'
+catch
+    console.log 'No src/conf.cson found!'
+    exit 1
+
 module.exports =
     name: 'TGServer'
-    host: process.env.HOST ? process.env.npm_package_config_prod_host
-    port: process.env.PORT ? process.env.npm_package_config_prod_port
-    hostUrl: 'localhost'
     invalid_chars: ['$']
+    models: [
+        'Session'
+        'User'
+        'Message'
+    ]
     middleware: [
         (require 'body-parser').json()
         (req, res, next) ->
@@ -15,9 +23,9 @@ module.exports =
     ]
     dependencies:
         'mongoose':
-            func: (mongoose) ->
-                mongoose.connect "mongodb://#{process.env.MONGO ? process.env.npm_package_config_prod_mongo}/TGData", (err) ->
+            func: (mongoose, env) ->
+                mongoose.connect "mongodb://#{uSettings[env].mongo}/TGData", (err) ->
                     (console.log err; process.exit(1)) if err
         'sendgrid':
-            func: (sendgrid) ->
-                sendgrid process.env.npm_package_config_email_username, process.env.npm_package_config_email_password
+            func: (sendgrid, env) ->
+                sendgrid uSettings.sendgrid.username, uSettings.sendgrid.password

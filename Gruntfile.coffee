@@ -4,33 +4,32 @@ module.exports = (grunt) ->
         coffee:
             compile:
                 files:
-                    'target/test.js': ['src/test.coffee', 'src/Tests/**/*.coffee']
+                    'target/test.js': ['tests/test.coffee', 'tests/**/*.spec.coffee']
                 options:
                     bare: yes
-                
+
             glob_to_multiple:
                 expand: yes
                 cwd: 'src'
                 src: [
-                    'app.coffee'
-                    'App/**/*.coffee'
-                    'Assets/**/*.coffee'
-                    'Models/**/*.coffee'
-                    'Routes/**/*.coffee'
+                    'server.coffee'
+                    'routes.coffee'
+                    'app/**/*.coffee'
+                    'models/**/*.coffee'
                 ]
                 dest: 'target'
                 ext: '.js'
                 options:
                     bare: yes
-                    
+
         cson:
             glob_to_multiple:
                 expand: yes
                 cwd: 'src'
-                src: ['**/*.cson']
+                src: ['**/*.cson', '!*.template.cson']
                 dest: 'target'
                 ext: '.json'
-                
+
         coffeelint:
             app: ['src/**/*.coffee']
             options:
@@ -40,24 +39,31 @@ module.exports = (grunt) ->
                     'level': 'ignore'
                 'no_throwing_strings':
                     'level': 'ignore'
-            
+
         clean: ['target']
-        
+
         copy:
-            main:
+            dist:
                 files: [
-                    expand: yes
-                    cwd: 'src'
-                    src: ['**/*.js', '**/*.json', '**/*.html']
-                    dest: 'target'
+                    {
+                        expand: yes
+                        cwd: 'src'
+                        src: ['**/*.js', '**/*.json']
+                        dest: 'target'
+                    },{
+                        expand: yes
+                        cwd: 'resources'
+                        src: ['*']
+                        dest: 'target/resources'
+                    }
                 ]
-                
+
     grunt.loadNpmTasks 'grunt-contrib-coffee'
     grunt.loadNpmTasks 'grunt-cson'
     grunt.loadNpmTasks 'grunt-coffeelint'
     grunt.loadNpmTasks 'grunt-contrib-clean'
     grunt.loadNpmTasks 'grunt-contrib-copy'
-    
+
     grunt.registerTask 'default', ['coffeelint', 'clean', 'copy', 'coffee', 'cson']
-    
+
     return

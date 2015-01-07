@@ -13,3 +13,6 @@ target/
 
 # IntelliJ Family
 .idea/
+
+# Conf
+src/conf.cson

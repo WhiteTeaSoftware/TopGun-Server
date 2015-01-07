@@ -25,17 +25,8 @@
         "chai": "~1.10.0"
     },
     "scripts": {
-        "start": "node target/app.js",
+        "start": "node target/server.js",
         "test": "mocha target/test.js"
-    },
-    "config": {
-        "cluster": true,
-        "test_host": "127.0.0.1",
-        "test_port": "3000",
-        "prod_host": "0.0.0.0",
-        "prod_port": "80",
-        "test_mongo": "127.0.0.1",
-        "prod_mongo": "127.0.0.1"
     },
     "engines": {
         "node": "0.10.31"

@@ -6,8 +6,7 @@ path = require 'path'
 
 module.exports = (app) ->
     log = app.get 'log'
-    hostUrl = app.get 'hostUrl'
-    port = app.get 'port'
+    hostUrl = app.get 'url'
     mongoose = app.get 'mongoose'
     sendgrid = app.get 'sendgrid'
     Session = app.get 'Session'
