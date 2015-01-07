@@ -15,8 +15,9 @@ module.exports = (app) ->
         _id: String # username
         n: String # display name
         p: String # password
+        r: String # remember me token
         c: String # access code
-        t: # TTL
+        t: # TTL for
             type: Date
             expires: '14d'
             default: Date.now
@@ -60,12 +61,13 @@ module.exports = (app) ->
     UserSchema.statics.login = (options, response, cb=->) ->
         @username = options.u?.toLowerCase()
         @password = options.p
+        @remToken = options.r
         @oauth_token = options.t
         @user_type = options.y ? 'n'
 
         nativeLogin = =>
             Session.findOneAndRemove {'u': @username}, =>
-                @.findById(@username).exec (err, user) =>
+                @.findById  @username, (err, user) =>
                     return cb response.status(500).send m: 'Cannot find user!' if not user
                     return cb response.status(500).send m: 'Something bad happened server side' if err
                     return cb response.status(500).send m: 'User is not activated!' if user.c?
@@ -74,20 +76,43 @@ module.exports = (app) ->
                         return cb response.status(500).send m: 'Something bad happened server side' if err
                         return cb response.status(500).send m: 'Bad login!' if not res
 
-                        token = uuid.v4()
+                        sToken = uuid.v4()
+                        rToken = uuid.v4()
 
+                        user.r = rToken
+                        user.save ->
+                            session = new Session
+                                _id: sToken
+                                u: user._id
+                                n: user.n
+
+                            session.save -> cb response.send t: sToken, r: rToken
+
+        rememberMe = =>
+            @.findOne {'r': @remToken}, (err, user) ->
+                return cb response.status(500).send m: 'Cannot find user!' if not user
+                return cb response.status(500).send m: 'Something bad happened server side' if err
+                return cb response.status(500).send m: 'User is not activated!' if user.c?
+
+                Session.findOneAndRemove {'u': user.u}, ->
+                    sToken = uuid.v4()
+                    rToken = uuid.v4()
+
+                    user.r = rToken
+                    user.save ->
                         session = new Session
-                            _id: token
+                            _id: sToken
                             u: user._id
                             n: user.n
 
-                        session.save -> cb response.send t: token
+                        session.save -> cb response.send t: sToken, r: rToken
 
         nullLogin = ->
             cb response.status(500).send m: 'Bad login!'
 
         switch
             when @user_type is 'n' and @username? and @password? then nativeLogin()
+            when @user_type is 'n' and @remToken? then rememberMe()
             else nullLogin()
 
     UserSchema.statics.logout = (options, response, cb=->) ->

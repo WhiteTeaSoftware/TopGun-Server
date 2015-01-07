@@ -140,11 +140,51 @@ describe 'User', ->
                 Session.find {u: 'ryan'}, (err, sessions) ->
                     expect(err, 'err').to.be.null
                     expect(sessions, 'sessions').to.not.be.empty
+                    expect(sessions, 'sessions').to.have.length 1
                     expect(sessions[0], 'Session').to.not.be.undefined
                     expect(sessions[0].u, 'Session.u').to.equal 'ryan'
                     expect(sessions[0].n, 'Session.n').to.equal 'Ryan'
                     expect(sessions[0]._id, 'Session._id').to.equal res.result.t
                     done()
+
+        it 'should ignore bad remember me logins', (done) ->
+            User.login {
+                u: 'ryan'
+                p: 'testpass'
+            }, Response(), (res) ->
+                expect(res.code, 'Response.code').to.equal 200
+                expect(res.result, 'Response.result').to.not.be.empty
+                expect(res.result.r, 'rToken').to.not.be.undefined
+                User.login {
+                    r: 'badremtoken'
+                }, Response(), (res) ->
+                    expect(res.code, 'Response_1.code').to.equal 500
+                    expect(res.result, 'Response_1.result').to.not.be.empty
+                    expect(res.result.t, 'Token').to.be.undefined
+                    done()
+
+        it 'should allow remember me logins', (done) ->
+            User.login {
+                u: 'ryan'
+                p: 'testpass'
+            }, Response(), (res) ->
+                expect(res.code, 'Response.code').to.equal 200
+                expect(res.result, 'Response.result').to.not.be.empty
+                expect(res.result.r, 'rToken').to.not.be.undefined
+                User.login {
+                    r: res.result.r
+                }, Response(), (res) ->
+                    expect(res.code, 'Response_1.code').to.equal 200
+                    expect(res.result, 'Response_1.result').to.not.be.empty
+                    expect(res.result.t, 'Token').to.not.be.undefined
+                    Session.findById res.result.t, (err, session) ->
+                        expect(err, 'err').to.be.null
+                        expect(session, 'Session').to.not.be.undefined
+                        expect(session.u, 'Session.u').to.equal 'ryan'
+                        expect(session.n, 'Session.n').to.equal 'Ryan'
+                        expect(session._id, 'Session._id').to.equal res.result.t
+                        done()
+
 
     describe '.logout', ->
         it 'should ignore no token', (done) ->
