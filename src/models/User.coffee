@@ -47,14 +47,15 @@ module.exports = (app) ->
                 cb response.send m: "Verification code sent to #{@email}"
 
                 if not app.get 'testing'
+                    console.log sendgrid
                     sendgrid.send {
                         from: "auth@#{hostUrl}"
                         fromname: 'TopGun App'
                         to: @email
                         toname: @display_name
                         subject: 'Activate your new TopGun account! :D'
-                        text: "Your access code is #{code}. Please either enter it into the app or go to #{hostUrl}/auth/#{@username}/#{code}"
-                        html: "Your access code is #{code}. Please either enter it into the app or <a href=\"http://#{hostUrl}/auth/#{@username}/#{code}\">click here</a>"
+                        text: "Hi, #{@username}\nYour access code is #{code}. Please either enter it into the app or go to #{hostUrl}/auth/#{@username}/#{code}"
+                        html: "Hi, #{@username}\nYour access code is #{code}. Please either enter it into the app or <a href=\"http://#{hostUrl}/auth/#{@username}/#{code}\">click here</a>"
                     }, (err) =>
                         return log.error path.basename(__filename), "Error sending email to #{@email}: %j", err if err
 

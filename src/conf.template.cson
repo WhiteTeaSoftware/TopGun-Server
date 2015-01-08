@@ -4,6 +4,7 @@
         host: 'localhost'
         port: '80'
         mongo: 'localhost'
+        testing: off
 
     test:
         url: 'localhost'
@@ -11,7 +12,7 @@
         port: '80'
         mongo: 'localhost'
 
-    sendgrid:
+    sendgridCredentials:
         username: 'TestUsername'
         password: 'TestPassword'
 }

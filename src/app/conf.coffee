@@ -28,4 +28,4 @@ module.exports =
                     (console.log err; process.exit(1)) if err
         'sendgrid':
             func: (sendgrid, env) ->
-                sendgrid uSettings.sendgrid.username, uSettings.sendgrid.password
+                sendgrid uSettings.sendgridCredentials.username, uSettings.sendgridCredentials.password
