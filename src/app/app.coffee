@@ -56,9 +56,7 @@ module.exports = (options = {}) ->
 
     model app for model in models when typeof model is 'function'
 
-    routes = require  './../routes'
-
-    route app for route in routes when typeof route is 'function'
+    (require  './../routes')(app)
 
     (app.get 'log').level = 'silent' if options.testing
 
