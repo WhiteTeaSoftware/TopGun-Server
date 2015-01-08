@@ -1,7 +1,7 @@
 {
     "name": "TopGun-Server",
     "author": "Ryan Delaney",
-    "version": "0.0.6",
+    "version": "0.0.7",
     "description": "Backend for TopGun mobile app",
     "private": true,
     "main": "target/server.js",
@@ -26,7 +26,7 @@
     },
     "scripts": {
         "start": "node target/server.js",
-        "test": "mocha target/test.js"
+        "test": "mocha target/test/test.js"
     },
     "engines": {
         "node": "0.10.31"

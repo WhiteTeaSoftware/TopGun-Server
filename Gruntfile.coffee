@@ -4,7 +4,7 @@ module.exports = (grunt) ->
         coffee:
             compile:
                 files:
-                    'target/test.js': ['tests/test.coffee', 'tests/**/*.spec.coffee']
+                    'target/test/test.js': ['test/test.coffee', 'test/**/*.spec.coffee']
                 options:
                     bare: yes
 

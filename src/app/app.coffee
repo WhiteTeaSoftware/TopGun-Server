@@ -5,7 +5,6 @@ fs = require 'fs'
 path = require 'path'
 
 module.exports = (options = {}) ->
-    options.testing ?= true
     app = express()
     app.use express.static __dirname+'/../resources'
     app.set 'log', log
@@ -43,6 +42,7 @@ module.exports = (options = {}) ->
     name = options.name ?= 'App'
     host = options.host ?= '127.0.0.1'
     port = options.port ?= '3000'
+    testing = options.testing ?= on
 
     for dep, option of options.dependencies
         if options.dependencies?

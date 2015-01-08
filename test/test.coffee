@@ -12,7 +12,7 @@ Response = ->
 Request = require 'request'
 expect = (require 'chai').expect
 
-app = (require './app/app')(
+app = (require './../app/app')(
     testing: on
 )
 
