@@ -1,18 +1,16 @@
-{
-    prod:
-        url: 'localhost'
-        host: 'localhost'
-        port: '80'
-        mongo: 'localhost'
-        testing: off
+prod:
+    url: 'localhost'
+    host: 'localhost'
+    port: '80'
+    mongo: 'localhost'
+    testing: off
 
-    test:
-        url: 'localhost'
-        host: 'localhost'
-        port: '80'
-        mongo: 'localhost'
+test:
+    url: 'localhost'
+    host: 'localhost'
+    port: '80'
+    mongo: 'localhost'
 
-    sendgridCredentials:
-        username: 'TestUsername'
-        password: 'TestPassword'
-}
+sendgridCredentials:
+    username: 'TestUsername'
+    password: 'TestPassword'

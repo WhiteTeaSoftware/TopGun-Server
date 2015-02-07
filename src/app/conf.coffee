@@ -2,7 +2,7 @@ try
     uSettings = require './../conf'
 catch
     console.log 'No src/conf.cson found!'
-    exit 1
+    process.exit 1
 
 module.exports =
     name: 'TGServer'
