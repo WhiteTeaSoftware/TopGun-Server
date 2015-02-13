@@ -2,13 +2,13 @@ module.exports = (grunt) ->
     grunt.initConfig
         pkg: grunt.file.readJSON 'package.json'
         coffee:
-            compile:
+            test:
                 files:
                     'target/test/test.js': ['test/test.coffee', 'test/**/*.spec.coffee']
                 options:
                     bare: yes
 
-            glob_to_multiple:
+            dist:
                 expand: yes
                 cwd: 'src'
                 src: [
@@ -23,7 +23,7 @@ module.exports = (grunt) ->
                     bare: yes
 
         cson:
-            glob_to_multiple:
+            dist:
                 expand: yes
                 cwd: 'src'
                 src: ['**/*.cson', '!*.template.cson']
@@ -31,7 +31,7 @@ module.exports = (grunt) ->
                 ext: '.json'
 
         coffeelint:
-            app: ['src/**/*.coffee']
+            dist: ['src/**/*.coffee']
             options:
                 'max_line_length':
                     'level': 'ignore'

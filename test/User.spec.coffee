@@ -1,6 +1,10 @@
 describe 'User', ->
     before (done) ->
-        mongoose.connection.db.dropDatabase done
+        if mongoose.connection.readyState is 1
+            mongoose.connection.db.dropDatabase done
+        else
+            mongoose.connection.on 'connected', ->
+                mongoose.connection.db.dropDatabase done
 
     describe '.createUser', ->
         it 'should ignore bad usernames', (done) ->

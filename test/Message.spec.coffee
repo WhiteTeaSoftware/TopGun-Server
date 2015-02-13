@@ -8,7 +8,7 @@ describe 'Message', ->
     tUser.t = undefined
 
     before (done) ->
-        mongoose.connection.db.dropDatabase ->
+        addUser = ->
             User.createUser tUser, Response(), (res) ->
                 User.findById 'rrdelaney', (err, person) ->
                     User.authenticate {
@@ -18,6 +18,12 @@ describe 'Message', ->
                         User.login tUser, Response(), (res) ->
                             tUser.t = res.result.t
                             done()
+        
+        if mongoose.connection.readyState is 1
+            mongoose.connection.db.dropDatabase addUser
+        else
+            mongoose.connection.on 'connected', ->
+                mongoose.connection.db.dropDatabase addUser
 
     describe '.postMessage', ->
         it 'should ignore no token', (done) ->
