@@ -9,14 +9,6 @@ module.exports = (options = {}) ->
     app.use express.static __dirname+'/../resources'
     app.set 'log', log
 
-    ###
-    Loads conf files in the following order:
-        /conf
-        /App/conf
-        /$model_directory/conf
-        /$routes_directory/conf
-    ###
-
     process.argv.shift()
     process.argv.shift()
 
@@ -26,8 +18,7 @@ module.exports = (options = {}) ->
         app.set option, value
         options[option] = value
 
-    for config in ['./conf', './../conf']
-        for attr, val of require config
+        for attr, val of require './conf'
             if attr is 'test'
                 if options.testing
                     try options[attr__] = val__ for attr__, val__ of val when attr__ not of options
@@ -52,11 +43,11 @@ module.exports = (options = {}) ->
 
     app.set attr, val for attr, val of options when attr isnt 'dependencies' and attr isnt 'middleware' and attr isnt 'Models' and attr isnt 'Routes'
 
-    models = (require "./../models/#{model}" for model in options.models)
+    models = (require "./models/#{model}" for model in options.models)
 
     model app for model in models when typeof model is 'function'
 
-    (require  './../routes')(app)
+    (require  './routes')(app)
 
     (app.get 'log').level = 'silent' if options.testing
 

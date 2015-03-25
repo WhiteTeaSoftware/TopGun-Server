@@ -8,4 +8,4 @@ if cluster.isMaster
     log.info path.basename(__filename), "Started #{numCPUs} workers"
     cluster.on 'exit', (worker) -> log.error path.basename(__filename), "Worker #{worker.process.pid} stopped!"
 
-else (require './app/app')()
+else (require './app')()

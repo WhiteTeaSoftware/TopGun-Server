@@ -11,12 +11,7 @@ module.exports = (grunt) ->
             dist:
                 expand: yes
                 cwd: 'src'
-                src: [
-                    'server.coffee'
-                    'routes.coffee'
-                    'app/**/*.coffee'
-                    'models/**/*.coffee'
-                ]
+                src: ['**/*.coffee']
                 dest: 'target'
                 ext: '.js'
                 options:

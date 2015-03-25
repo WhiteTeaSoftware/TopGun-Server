@@ -68,7 +68,7 @@ module.exports = (app) ->
                         v: @text
 
                     message.save (err) ->
-                        if err then cb response.status(500).send m: 'Something bad happened server side' else response.send m: 'Transaction completed'
+                        if err then cb response.status(500).send m: 'Something bad happened server side' else cb response.send m: 'Transaction completed'
 
     MessageSchema.statics.getMessage = (options, response) ->
         @_id = options._id
