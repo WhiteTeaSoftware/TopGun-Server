@@ -1,5 +1,7 @@
 # TopGun Server
 
+This was mainly a learning project, and many of the dependencies are out of date. It isn't being actively deveoped, altough I do work on it sometimes.
+
 ## Building
 
 ### Setup
